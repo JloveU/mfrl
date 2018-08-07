@@ -374,7 +374,7 @@ class Runner(object):
         info['opponent'] = {'ave_agent_reward': 0., 'total_reward': 0., 'kill': 0.}
 
         max_nums, nums, agent_r_records, total_rewards = self.play(env=self.env, n_round=iteration, map_size=self.map_size, max_steps=self.max_steps, handles=self.handles,
-                    models=self.models, print_every=50, eps=variant_eps, render=(iteration + 1) % self.render_every if self.render_every > 0 else False, use_mean=use_mean, train=self.train)
+                    models=self.models, print_every=50, eps=variant_eps, render=((iteration + 1) % self.render_every == 0) if self.render_every > 0 else False, use_mean=use_mean, train=self.train)
         
         for i, tag in enumerate(['main', 'opponent']):
             info[tag]['total_reward'] = total_rewards[i]
@@ -391,6 +391,8 @@ class Runner(object):
                 print(Color.INFO.format('[INFO] Self-play Updated!\n'))
 
                 print(Color.INFO.format('[INFO] Saving model ...'))
+                os.makedirs(self.model_dir + '-0', exist_ok=True)
+                os.makedirs(self.model_dir + '-1', exist_ok=True)
                 self.models[0].save(self.model_dir + '-0', iteration)
                 self.models[1].save(self.model_dir + '-1', iteration)
 

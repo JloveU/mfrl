@@ -108,7 +108,7 @@ void DiscreteSnake::add_object(int obj_id, int n, const char *method, const int 
             std::vector<Position> pos;
             for (int i = 0; i < n; i++) {
                 Agent *agent = new Agent(id_counter);
-                Direction dir = (Direction) (random() % (int) DIR_NUM);
+                Direction dir = (Direction) (rand() % (int) DIR_NUM);
 
                 map.get_random_blank(pos, initial_length);
 
@@ -129,11 +129,8 @@ void DiscreteSnake::get_observation(GroupHandle group, float **linear_buffer) {
     int n_action = (int)ACT_NUM;
     int feature_size = embedding_size + n_action + 1; // embedding + last_action + length
 
-    float (*view_buffer)[view_height][view_width][n_channel];
-    float (*feature_buffer)[feature_size];
-
-    view_buffer = (decltype(view_buffer))linear_buffer[0];
-    feature_buffer = (decltype(feature_buffer))linear_buffer[1];
+    float *view_buffer = linear_buffer[0];
+    float *feature_buffer = linear_buffer[1];
 
     size_t agent_size = agents.size();
 
@@ -144,11 +141,11 @@ void DiscreteSnake::get_observation(GroupHandle group, float **linear_buffer) {
     for (int i = 0; i < agent_size; i++) {
         Agent *agent = agents[i];
 
-        map.extract_view(agent, (float *)view_buffer[i],
+        map.extract_view(agent, view_buffer + i * view_height * view_width * n_channel,
                          view_height, view_width, n_channel, id_counter);
-        agent->get_embedding(feature_buffer[i], embedding_size);
-        feature_buffer[i][embedding_size + agent->get_action()] = 1;
-        feature_buffer[i][embedding_size + n_action] = agent->get_length();
+        agent->get_embedding(feature_buffer + i * feature_size, embedding_size);
+        feature_buffer[i * feature_size + (embedding_size + agent->get_action())] = 1;
+        feature_buffer[i * feature_size + (embedding_size + n_action)] = agent->get_length();
     }
 }
 

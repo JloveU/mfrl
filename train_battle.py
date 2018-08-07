@@ -1,6 +1,8 @@
 """Self Play
 """
 
+import sys
+sys.path.append("examples/battle_model/python")
 import argparse
 import os
 import tensorflow as tf
@@ -46,7 +48,7 @@ if __name__ == '__main__':
     start_from = 0
 
     sess = tf.Session(config=tf_config)
-    models = [spawn_ai(args.algo, sess, env, handles[0], algo.algo + '-me', args.max_steps), spawn_ai(args.algo, sess, env, handles[1], args.algo + '-opponent', args.max_steps)]
+    models = [spawn_ai(args.algo, sess, env, handles[0], args.algo + '-me', args.max_steps), spawn_ai(args.algo, sess, env, handles[1], args.algo + '-opponent', args.max_steps)]
     sess.run(tf.global_variables_initializer())
     runner = tools.Runner(sess, env, handles, args.map_size, args.max_steps, models, play,
                             render_every=args.save_every if args.render else 0, save_every=args.save_every, tau=0.01, log_name=args.algo, 

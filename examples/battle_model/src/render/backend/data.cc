@@ -7,6 +7,7 @@
     #include <json/json.h>
 #endif
 #include <unordered_map>
+#include <algorithm>
 
 #include "data.h"
 #include "utility/logger.h"

@@ -250,7 +250,10 @@ void GridWorld::add_agents(GroupHandle group, int n, const char *method,
                 }
 
                 agent->set_dir(turn_mode ? (Direction) pos_dir[i] : NORTH);
-                agent->set_pos((Position) {pos_x[i], pos_y[i]});
+                Position pos_;
+                pos_.x = pos_x[i];
+                pos_.y = pos_y[i];
+                agent->set_pos(pos_);
 
                 ret = map.add_agent(agent, base_channel_id);
                 add_or_error(ret, pos_x[i], pos_y[i], id_counter, g, agent);
@@ -462,7 +465,7 @@ void GridWorld::step(int *done) {
 
     // shuffle attacks
     for (int i = 0; i < attack_size; i++) {
-        int j = (int)random_engine() % (i+1);
+        int j = abs((int)random_engine()) % (i+1);
         std::swap(attack_buffer[i], attack_buffer[j]);
     }
 
@@ -668,8 +671,8 @@ void GridWorld::set_goal(GroupHandle group, const char *method, const int *linea
     if (strequ(method, "random")) {
         std::vector<Agent*> &agents = groups[group].get_agents();
         for (int i = 0; i < agents.size(); i++) {
-            int x = (int)random_engine() % width;
-            int y = (int)random_engine() % height;
+            int x = abs((int)random_engine()) % width;
+            int y = abs((int)random_engine()) % height;
             agents[i]->set_goal(Position{x, y}, 0);
         }
     } else {

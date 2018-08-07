@@ -73,11 +73,11 @@ void rush_prey_infer_action(float *obs_buf, float *feature_buf, int n, int heigh
                 if (found && (int)(obs.at(height-1, width/2, wall) + 0.5) != 1)
                     act_buf[i] = 0;
                 else
-                    act_buf[i] = (int)(random() % (attack_base));
+                    act_buf[i] = (int)(rand() % (attack_base));
             } else
                 act_buf[i] = attack_base + action;
         } else {
-            act_buf[i] = (int)(random() % (attack_base));
+            act_buf[i] = (int)(rand() % (attack_base));
         }
     }
 }

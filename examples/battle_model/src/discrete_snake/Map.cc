@@ -70,8 +70,8 @@ bool Map::get_random_blank(std::vector<Position> &pos, int n) {
         int last_dir = 100;
         PositionInteger pos_int;
 
-        int x = (int)random() % map_width;
-        int y = (int)random() % map_height;
+        int x = (int)rand() % map_width;
+        int y = (int)rand() % map_height;
 
         int i;
         for (i = 0; i < n; i++) {
@@ -81,7 +81,7 @@ bool Map::get_random_blank(std::vector<Position> &pos, int n) {
 
             pos[i] = Position{x, y};
 
-            int start = (int)random() % 100;
+            int start = (int)rand() % 100;
             for (int j = 0; j < 4; j++) { // 4 direction
                 int new_x = x, new_y = y;
                 int dir = (start + j) % 4;
@@ -123,7 +123,7 @@ void Map::extract_view(const Agent* agent, float *linear_buffer, int height, int
                        int id_counter) {
     Position pos = agent->get_head();
 
-    float (*buffer)[width][channel] = (decltype(buffer)) linear_buffer;
+    float *buffer = linear_buffer;
 
     int x_start = pos.x - width / 2;
     int y_start = pos.y - height / 2;
@@ -148,19 +148,19 @@ void Map::extract_view(const Agent* agent, float *linear_buffer, int height, int
                 case OCC_NONE:
                     break;
                 case OCC_WALL:
-                    buffer[view_y][view_x][CHANNEL_WALL] = 1;
+                    buffer[view_y * width * channel + view_x * channel + CHANNEL_WALL] = 1;
                     break;
                 case OCC_FOOD:
-                    buffer[view_y][view_x][CHANNEL_FOOD] = 1;
+                    buffer[view_y * width * channel + view_x * channel + CHANNEL_FOOD] = 1;
                     break;
                 case OCC_AGENT:
                     occupier = (Agent*)slots[pos_int].occupier;
                     if (occupier == agent) {
-                        buffer[view_y][view_x][CHANNEL_SELF] = 1;
+                        buffer[view_y * width * channel + view_x * channel + CHANNEL_SELF] = 1;
                     } else {
-                        buffer[view_y][view_x][CHANNEL_OTHER] = 1;
+                        buffer[view_y * width * channel + view_x * channel + CHANNEL_OTHER] = 1;
                     }
-                    buffer[view_y][view_x][CHANNEL_ID] = (float) (occupier->get_id() + 1) / id_counter;
+                    buffer[view_y * width * channel + view_x * channel + CHANNEL_ID] = (float) (occupier->get_id() + 1) / id_counter;
                     break;
             }
             view_y++;

@@ -7,7 +7,11 @@
 #define MAGNET_GRIDWORLD_RANGE_H
 
 #include <cstdio>
+#ifdef _MSC_VER
+#include <xtgmath.h>
+#else
 #include <tgmath.h>
+#endif
 #include <cstring>
 
 namespace magent {

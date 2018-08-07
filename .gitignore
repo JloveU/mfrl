@@ -1,0 +1,13 @@
+# Python
+__pycache__
+*.egg-info
+
+# PyCharm
+.idea
+
+# Built files
+*.dll
+*.pyd
+
+# Others
+data/
