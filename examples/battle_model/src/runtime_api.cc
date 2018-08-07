@@ -3,24 +3,11 @@
  * \brief Runtime library interface
  */
 
-#ifdef EXPORT_PYTHON
-#include<boost/python.hpp>
-#endif
 #include "Environment.h"
 #include "gridworld/GridWorld.h"
 #include "discrete_snake/DiscreteSnake.h"
 #include "utility/utility.h"
 #include "runtime_api.h"
-
-#ifdef EXPORT_PYTHON
-BOOST_PYTHON_MODULE(magent)
-{
-    using namespace boost::python;
-
-    def("env_new_game", env_new_game);
-    // ...
-}
-#endif
 
 /**
  *  General Environment

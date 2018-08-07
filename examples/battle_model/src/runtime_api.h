@@ -9,11 +9,13 @@
 #include "Environment.h"
 
 #ifdef _MSC_VER
-#ifdef MAGENT_LIB
-#  define MAGENT_API __declspec(dllexport)
+    #ifdef MAGENT_LIB
+        #define MAGENT_API __declspec(dllexport)
+    #else
+        #define MAGENT_API __declspec(dllimport)
+    #endif
 #else
-#  define MAGENT_API __declspec(dllimport)
-#endif
+    #define MAGENT_API
 #endif
 
 extern "C" {

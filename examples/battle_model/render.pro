@@ -1,7 +1,7 @@
 TEMPLATE = app
 QT -= core gui
 CONFIG += c++11
-DESTDIR = $$PWD/build
+DESTDIR = $$PWD/build/render
 
 SOURCES += \
     $$files(src/render/*.cc) \
@@ -19,28 +19,29 @@ JSONCPP_ROOT = $$(JSONCPP_ROOT)
 isEmpty(JSONCPP_ROOT) {
     JSONCPP_ROOT = $$PWD/3rdparty/jsoncpp
 }
-INCLUDEPATH += $$JSONCPP_ROOT
-SOURCES += $$JSONCPP_ROOT/jsoncpp.cpp
+INCLUDEPATH += $$JSONCPP_ROOT/include
+SOURCES += $$JSONCPP_ROOT/src/jsoncpp.cpp
 
 # WebSocket++
 WEBSOCKETPP_ROOT = $$(WEBSOCKETPP_ROOT)
 isEmpty(WEBSOCKETPP_ROOT) {
     WEBSOCKETPP_ROOT = $$PWD/3rdparty/websocketpp
 }
-INCLUDEPATH += $$WEBSOCKETPP_ROOT
+INCLUDEPATH += $$WEBSOCKETPP_ROOT/include
 
 # Boost
 BOOST_ROOT = $$(BOOST_ROOT)
 isEmpty(BOOST_ROOT) {
     BOOST_ROOT = $$PWD/3rdparty/boost
 }
-INCLUDEPATH += $$BOOST_ROOT
-LIBS += -L$$BOOST_ROOT/lib64-msvc-14.1
+INCLUDEPATH += $$BOOST_ROOT/include
+LIBS += -L$$BOOST_ROOT/lib
+!win32: LIBS += -lboost_system
 
 
 # install
-install_frontend.path = $$DESTDIR/render
+install_frontend.path = $$DESTDIR
 install_frontend.files = $$PWD/src/render/frontend/*
-install_backend_demo.path = $$DESTDIR/render
+install_backend_demo.path = $$DESTDIR
 install_backend_demo.files = $$PWD/src/render/backend/demo/*
 INSTALLS += install_frontend install_backend_demo

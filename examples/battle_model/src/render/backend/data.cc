@@ -1,11 +1,7 @@
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#ifdef __linux__
-    #include <jsoncpp/json/json.h>
-#else
-    #include <json/json.h>
-#endif
+#include <json/json.h>
 #include <unordered_map>
 #include <algorithm>
 
