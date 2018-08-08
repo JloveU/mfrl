@@ -228,7 +228,7 @@ class MemoryGroup(object):
             act_next_prob = self.prob.sample(next_idx)
             return obs, feature, actions, act_prob, obs_next, feature_next, act_next_prob, rewards, dones, masks
         else:
-            return obs, feature, obs_next, feature_next, dones, rewards, actions, masks
+            return obs, feature, actions, obs_next, feature_next, rewards, dones, masks
 
     def get_batch_num(self):
         print('\n[INFO] Length of buffer and new add:', len(self.obs0), self._new_add)
@@ -367,11 +367,10 @@ class Runner(object):
                 os.makedirs(self.model_dir)
 
     def run(self, variant_eps, iteration, use_mean=False, win_cnt=None):
-        info = {'mian': None, 'opponent': None}
-
-        # pass
-        info['main'] = {'ave_agent_reward': 0., 'total_reward': 0., 'kill': 0.}
-        info['opponent'] = {'ave_agent_reward': 0., 'total_reward': 0., 'kill': 0.}
+        info = {
+            'main': {'ave_agent_reward': 0., 'total_reward': 0., 'kill': 0.},
+            'opponent': {'ave_agent_reward': 0., 'total_reward': 0., 'kill': 0.}
+        }
 
         max_nums, nums, agent_r_records, total_rewards = self.play(env=self.env, n_round=iteration, map_size=self.map_size, max_steps=self.max_steps, handles=self.handles,
                     models=self.models, print_every=50, eps=variant_eps, render=((iteration + 1) % self.render_every == 0) if self.render_every > 0 else False, use_mean=use_mean, train=self.train)

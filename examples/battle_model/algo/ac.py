@@ -14,7 +14,7 @@ class ActorCritic:
         self.view_space = env.get_view_space(handle)
         self.feature_space = env.get_feature_space(handle)
         self.num_actions = env.get_action_space(handle)[0]
-        self.gamma = gamma
+        self.reward_decay = gamma
 
         self.batch_size = batch_size
         self.learning_rate = learning_rate
@@ -62,8 +62,8 @@ class ActorCritic:
 
         h_emb = tf.layers.dense(input_feature,  units=hidden_size[0], activation=tf.nn.relu)
 
-        dense = tf.concat([h_view, h_emb], axis=1)
-        dense = tf.layers.dense(dense, units=hidden_size[0] * 2, activation=tf.nn.relu)
+        concat_layer = tf.concat([h_view, h_emb], axis=1)
+        dense = tf.layers.dense(concat_layer, units=hidden_size[0] * 2, activation=tf.nn.relu)
 
         policy = tf.layers.dense(dense / 0.1, units=self.num_actions, activation=tf.nn.softmax)
         policy = tf.clip_by_value(policy, 1e-10, 1-1e-10)
@@ -120,7 +120,7 @@ class ActorCritic:
         action, reward = self.action_buf, self.reward_buf
 
         ct = 0
-        gamma = self.gamma
+        gamma = self.reward_decay
         # collect episodes from multiple separate buffers to a continuous buffer
         for episode in batch_data:
             v, f, a, r = episode.views, episode.features, episode.actions, episode.rewards
@@ -154,7 +154,7 @@ class ActorCritic:
                 self.reward: reward,
             })
 
-        print('[*] PG_LOSS:', np.round(pg_loss, 6), '/ VF_LOSS:', np.round(vf_loss, 6), '/ ENT_LOSS:', np.round(ent_loss), '/ Value:', np.mean(state_value))
+        print('[*] PG_LOSS:', np.round(pg_loss, 6), '/ VF_LOSS:', np.round(vf_loss, 6), '/ ENT_LOSS:', np.round(ent_loss, 6), '/ VALUE:', np.mean(state_value))
 
     def save(self, dir_path, step=0):
         model_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, self.name_scope)
@@ -201,7 +201,7 @@ class MFAC:
 
         with tf.variable_scope(name):
             self.name_scope = tf.get_variable_scope().name
-            self._create_network(self.view_space, self.feature_space, )
+            self._create_network(self.view_space, self.feature_space)
     
     @property
     def vars(self):
@@ -218,7 +218,6 @@ class MFAC:
         return action.astype(np.int32).reshape((-1,))
 
     def _create_network(self, view_space, feature_space):
-        # input
         input_view = tf.placeholder(tf.float32, (None,) + view_space)
         input_feature = tf.placeholder(tf.float32, (None,) + feature_space)
         input_act_prob = tf.placeholder(tf.float32, (None, self.num_actions))
@@ -243,8 +242,8 @@ class MFAC:
         self.calc_action = tf.multinomial(tf.log(policy), 1)
 
         # for value obtain
-        emb_prob = tf.dense(input_act_prob, unit=64, activation=tf.nn.relu)
-        dense_prob = tf.dense(emb_prob, unit=32, action=tf.nn.relu)
+        emb_prob = tf.layers.dense(input_act_prob, units=64, activation=tf.nn.relu)
+        dense_prob = tf.layers.dense(emb_prob, units=32, activation=tf.nn.relu)
         concat_layer = tf.concat([concat_layer, dense_prob], axis=1)
         dense = tf.layers.dense(concat_layer, units=hidden_size[0], activation=tf.nn.relu)
         value = tf.layers.dense(dense, units=1)
@@ -301,7 +300,7 @@ class MFAC:
         ct = 0
         gamma = self.reward_decay
         # collect episodes from multiple separate buffers to a continuous buffer
-        for k, episode in enumerate(batch_data):
+        for episode in batch_data:
             v, f, a, r, prob = episode.views, episode.features, episode.actions, episode.rewards, episode.probs
             m = len(episode.rewards)
 

@@ -1,8 +1,6 @@
 """Self Play
 """
 
-import sys
-sys.path.append("examples/battle_model/python")
 import argparse
 import os
 import tensorflow as tf
@@ -53,6 +51,7 @@ if __name__ == '__main__':
     runner = tools.Runner(sess, env, handles, args.map_size, args.max_steps, models, play,
                             render_every=args.save_every if args.render else 0, save_every=args.save_every, tau=0.01, log_name=args.algo, 
                             log_dir=log_dir, model_dir=model_dir, train=True)
+    # tf.summary.FileWriter(log_dir + "/" + args.algo, graph=tf.get_default_graph())
 
     for k in range(start_from, start_from + args.n_round):
         eps = magent.utility.piecewise_decay(k, [0, 700, 1400], [1, 0.2, 0.05])
