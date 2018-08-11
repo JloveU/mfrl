@@ -130,7 +130,7 @@ def play(env, n_round, map_size, max_steps, handles, models, print_every, eps=1.
     return max_nums, nums, mean_rewards, total_rewards
 
 
-def battle(env, n_round, map_size, max_steps, handles, models, print_every, eps=1.0, render=False, use_mean=None, train=False):
+def battle(env, n_round, map_size, max_steps, handles, models, print_every, eps=1.0, render=False, use_mean=False, train=False):
     """play a ground and train"""
     env.reset()
     generate_map(env, map_size, handles)

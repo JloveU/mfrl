@@ -19,7 +19,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--algo', type=str, choices={'ac', 'mfac', 'mfq', 'il'}, help='choose an algorithm from the preset', required=True)
     parser.add_argument('--oppo', type=str, choices={'ac', 'mfac', 'mfq', 'il'}, help='indicate the opponent model')
-    parser.add_argument('--n_round', type=int, default=50, help='set the trainning round')
+    parser.add_argument('--n_round', type=int, default=50, help='set the training round')
     parser.add_argument('--render', action='store_true', help='render or not (if true, will render every save)')
     parser.add_argument('--map_size', type=int, default=40, help='set the size of map')  # then the amount of agents is 64
     parser.add_argument('--max_steps', type=int, default=400, help='set the max steps')
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     models[0].load(main_model_dir, step=args.idx[0])
     models[1].load(oppo_model_dir, step=args.idx[1])
 
-    runner = tools.Runner(sess, env, handles, args.map_size, args.max_steps, models, battle, render_every=0)
+    runner = tools.Runner(sess, env, handles, args.map_size, args.max_steps, models, battle, render_every=1)
     win_cnt = {'main': 0, 'opponent': 0}
 
     for k in range(0, args.n_round):

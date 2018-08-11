@@ -447,7 +447,7 @@ void GridWorld::set_action(GroupHandle group, const int *actions) {
             if (act < type.turn_base) {          // move
                 move_buffer_bound.push_back(MoveAction{agent, act - type.move_base});
             } else if (act < type.attack_base) { // turn
-                turn_buffer_bound.push_back(TurnAction{agent, act - type.move_base});
+                turn_buffer_bound.push_back(TurnAction{agent, act - type.move_base});  // TODO type.move_base -> type.turn_base ?
             } else {                             // attack
                 attack_buffer.push_back(AttackAction{agent, act - type.attack_base});
             }
